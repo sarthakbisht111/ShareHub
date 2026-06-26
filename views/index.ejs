@@ -1,0 +1,88 @@
+<%- include('partials/header', { title: 'ShareHub — New Paste' }) %>
+
+<div class="page">
+  <div class="editor-section">
+    <h1 class="paste-title-input-label">New paste</h1>
+
+    <div class="editor-card">
+      <div class="editor-top">
+        <input
+          type="text"
+          id="paste-title"
+          class="title-input"
+          placeholder="Untitled paste"
+          maxlength="100"
+        />
+        <div class="editor-lang-badge" id="lang-badge">JavaScript</div>
+      </div>
+
+      <textarea
+        id="paste-content"
+        class="code-editor"
+        placeholder="// paste or type your code here"
+        spellcheck="false"
+      ></textarea>
+
+      <div class="editor-bottom">
+        <select id="paste-language" class="select">
+          <option value="javascript">JavaScript</option>
+          <option value="typescript">TypeScript</option>
+          <option value="python">Python</option>
+          <option value="java">Java</option>
+          <option value="cpp">C++</option>
+          <option value="plaintext">Plain Text</option>
+        </select>
+
+        <select id="paste-expiry" class="select">
+          <option value="1h">1 hour</option>
+          <option value="1d" selected>1 day</option>
+          <option value="1w">1 week</option>
+          <option value="never">Never</option>
+        </select>
+
+        <button class="create-btn">
+          Create Paste
+        </button>
+      </div>
+    </div>
+
+    <div id="success-box" class="success-box hidden">
+      <span class="success-label">Paste created</span>
+      <a id="paste-link" href="#" class="paste-url"></a>
+      <button class="copy-btn">Copy link</button>
+    </div>
+  </div>
+
+  <div class="sidebar">
+    <div class="stat-cards">
+      <div class="stat-card">
+        <div class="stat-value"><%= totalCount  %>+</div>
+        <div class="stat-label">Total pastes</div>
+      </div>
+    </div>
+
+    <div class="side-card">
+      <div class="side-title">Recent Pastes</div>
+      <% if (pastes.length === 0) { %>
+        <p class="empty-msg">No pastes yet</p>
+      <% } else { %>
+        <% pastes.forEach(paste => { %>
+          <a href="/paste/<%= paste.shortId %>" class="paste-item">
+            <div class="paste-item-left">
+              <span class="lang-dot lang-<%= paste.language || 'plaintext' %>"></span>
+              <div>
+                <div class="paste-item-title"><%= paste.title || 'Untitled' %></div>
+                <div class="paste-item-meta">
+                  <%= paste.language || 'plaintext' %> &middot;
+                  <%= new Date(paste.createdAt).toLocaleDateString() %>
+                </div>
+              </div>
+            </div>
+          </a>
+        <% }) %>
+      <% } %>
+    </div>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

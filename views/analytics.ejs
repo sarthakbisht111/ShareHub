@@ -1,0 +1,85 @@
+<%- include('partials/header', { title: 'Analytics — ShareHub' }) %>
+
+<div class="analytics-page">
+  <h1 class="analytics-heading">Analytics</h1>
+
+  <div class="analytics-stats" id="stats-grid">
+    <div class="stat-card">
+      <div class="stat-value" id="total-pastes">—</div>
+      <div class="stat-label">Total pastes</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" id="total-views">—</div>
+      <div class="stat-label">Total views</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" id="mongo-pastes">—</div>
+      <div class="stat-label">Stored in MongoDB</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" id="s3-pastes">—</div>
+      <div class="stat-label">Stored in S3</div>
+    </div>
+  </div>
+
+  <div class="analytics-grid">
+    <div class="side-card">
+      <div class="side-title">Pastes by language</div>
+      <div id="lang-chart"></div>
+    </div>
+
+    <div class="side-card">
+      <div class="side-title">Storage breakdown</div>
+      <div id="storage-chart"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+async function loadAnalytics() {
+  const res = await fetch('/api/pastes/analytics')
+  const data = await res.json()
+
+  document.getElementById('total-pastes').textContent = data.totalPastes
+  document.getElementById('total-views').textContent = data.totalViews
+  document.getElementById('mongo-pastes').textContent = data.mongoPastes
+  document.getElementById('s3-pastes').textContent = data.s3Pastes
+
+  // language bar chart
+  const langChart = document.getElementById('lang-chart')
+  const max = data.languageStats[0]?.count || 1
+  langChart.innerHTML = data.languageStats.map(lang => `
+    <div class="bar-row">
+      <span class="bar-label">${lang._id || 'plaintext'}</span>
+      <div class="bar-track">
+        <div class="bar-fill" style="width: ${(lang.count / max) * 100}%"></div>
+      </div>
+      <span class="bar-count">${lang.count}</span>
+    </div>
+  `).join('')
+
+  // storage bar chart
+  const storageChart = document.getElementById('storage-chart')
+  const totalStorage = data.totalPastes || 1
+  storageChart.innerHTML = `
+    <div class="bar-row">
+      <span class="bar-label">MongoDB</span>
+      <div class="bar-track">
+        <div class="bar-fill" style="width: ${(data.mongoPastes / totalStorage) * 100}%"></div>
+      </div>
+      <span class="bar-count">${data.mongoPastes}</span>
+    </div>
+    <div class="bar-row">
+      <span class="bar-label">S3</span>
+      <div class="bar-track">
+        <div class="bar-fill s3" style="width: ${(data.s3Pastes / totalStorage) * 100}%"></div>
+      </div>
+      <span class="bar-count">${data.s3Pastes}</span>
+    </div>
+  `
+}
+
+loadAnalytics()
+</script>
+
+<%- include('partials/footer') %>

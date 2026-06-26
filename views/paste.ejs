@@ -1,0 +1,54 @@
+<%- include('partials/header', { title: paste.title || 'Untitled — ShareHub' }) %>
+
+<div class="page">
+  <div class="paste-view-section">
+    <div class="paste-view-header">
+      <div>
+        <h1 class="paste-view-title"><%= paste.title || 'Untitled' %></h1>
+        <div class="paste-view-meta">
+          <span class="lang-dot lang-<%= paste.language || 'plaintext' %>"></span>
+          <span><%= paste.language || 'plaintext' %></span>
+          <span>&middot;</span>
+          <span><%= new Date(paste.createdAt).toLocaleDateString() %></span>
+          <% if (paste.expiresAt) { %>
+            <span>&middot;</span>
+            <span>expires <%= new Date(paste.expiresAt).toLocaleDateString() %></span>
+          <% } %>
+        </div>
+      </div>
+      <div class="paste-view-actions">
+        <a href="/paste/<%= paste.shortId %>/stats" class="action-btn">Stats</a>
+        <a href="/api/pastes/<%= paste.shortId %>/raw" class="action-btn">Raw</a>
+        <button class="action-btn copy-code-btn">Copy</button>
+      </div>
+    </div>
+
+    <div class="code-block">
+      <pre><code class="language-<%= paste.language || 'plaintext' %>" id="paste-code"><%= paste.content %></code></pre>
+    </div>
+  </div>
+
+  <div class="sidebar">
+    <div class="side-card">
+      <div class="side-title">Details</div>
+      <div class="detail-row">
+        <span class="detail-key">ID</span>
+        <span class="detail-val mono"><%= paste.shortId %></span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-key">Storage</span>
+        <span class="detail-val"><%= paste.s3Key ? 'S3' : 'MongoDB' %></span>
+      </div>
+      <% if (paste.expiresAt) { %>
+      <div class="detail-row">
+        <span class="detail-key">Expires</span>
+        <span class="detail-val"><%= new Date(paste.expiresAt).toLocaleDateString() %></span>
+      </div>
+      <% } %>
+    </div>
+    <a href="/" class="new-paste-btn">+ New Paste</a>
+  </div>
+</div>
+
+
+<%- include('partials/footer') %>

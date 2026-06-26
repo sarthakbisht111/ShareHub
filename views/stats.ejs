@@ -1,0 +1,37 @@
+<%- include('partials/header', { title: 'Stats — ShareHub' }) %>
+
+<div class="page single-col">
+  <div class="stats-card">
+    <h1 class="paste-view-title"><%= paste.title || 'Untitled' %></h1>
+    <div class="paste-view-meta" style="margin-bottom: 24px">
+      <span class="lang-dot lang-<%= paste.language || 'plaintext' %>"></span>
+      <span><%= paste.language || 'plaintext' %></span>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-value"><%= views %></div>
+        <div class="stat-label">Total views</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value"><%= storage %></div>
+        <div class="stat-label">Storage</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value"><%= paste.expiresAt ? new Date(paste.expiresAt).toLocaleDateString() : 'Never' %></div>
+        <div class="stat-label">Expires</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value"><%= new Date(paste.createdAt).toLocaleDateString() %></div>
+        <div class="stat-label">Created</div>
+      </div>
+    </div>
+
+    <div class="stats-actions">
+      <a href="/paste/<%= paste.shortId %>" class="action-btn">View paste</a>
+      <a href="/api/pastes/<%= paste.shortId %>/raw" class="action-btn">Raw</a>
+    </div>
+  </div>
+</div>
+
+<%- include('partials/footer') %>
